@@ -1,0 +1,28 @@
+DECLARE
+  l_string       VARCHAR2 (2000) := 'this assignment is to make every first letter of odd word to upper case';
+  l_substring    VARCHAR2 (2000) := NULL;
+  l_output       VARCHAR2 (2000);
+  i              NUMBER := 1;
+  j              NUMBER := 1;
+BEGIN
+  LOOP
+    l_substring  := TRIM (SUBSTR (l_string, j, INSTR (l_string, ' ', j, 1) - j));
+
+    IF i = 1
+    THEN
+      l_output  := INITCAP (l_substring);
+    ELSIF MOD (i, 2) = 0
+    THEN
+      l_output  := l_output || ' ' || l_substring;
+    ELSE
+      l_output  := l_output || ' ' || INITCAP (l_substring);
+    END IF;
+
+    i            := i + 1;
+    j            := LENGTH (l_output) + 2;
+
+    EXIT WHEN j > LENGTH (l_string);
+  END LOOP;
+
+  DBMS_OUTPUT.put_line ('output: ' || l_output);
+END

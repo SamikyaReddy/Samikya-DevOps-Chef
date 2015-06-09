@@ -1,0 +1,133 @@
+/***********************************************************************/
+-- Table creation Scripts
+/***********************************************************************/
+
+CREATE TABLE xxibm_users
+(
+  user_id      NUMBER
+ ,user_name    VARCHAR2 (50)
+ ,gender       VARCHAR2 (10)
+ ,state        VARCHAR2 (50)
+);
+
+ALTER TABLE xxibm_users
+ADD CONSTRAINT pk_userID PRIMARY KEY (user_id);
+
+CREATE TABLE xxibm_comments
+(
+  user_id      NUMBER
+ ,timestamp    DATE
+ ,comments     VARCHAR2 (1000)
+);
+
+/***********************************************************************/
+-- Insert into users table
+/***********************************************************************/
+
+INSERT INTO xxibm_users
+     VALUES (1
+            ,'Cody'
+            ,'Male'
+            ,'WI');
+
+INSERT INTO xxibm_users
+     VALUES (2
+            ,'Chris'
+            ,'Male'
+            ,'CA');
+
+
+INSERT INTO xxibm_users
+     VALUES (3
+            ,'Jane'
+            ,'Female'
+            ,'CA');
+
+INSERT INTO xxibm_users
+     VALUES (4
+            ,'John'
+            ,'Male'
+            ,'WI');
+
+/***********************************************************************/
+-- Insert into comments table
+/***********************************************************************/
+
+INSERT INTO xxibm_comments
+     VALUES (1
+            ,TO_DATE ('2012-01-02 08:31:03', 'YYYY-MM-DD HH24:MI:SS')
+            ,'I love working for IBM');
+            
+INSERT INTO xxibm_comments
+     VALUES (1
+            ,TO_DATE ('2012-01-01 10:28:43', 'YYYY-MM-DD HH24:MI:SS')
+            ,'This job is the best');
+            
+INSERT INTO xxibm_comments
+     VALUES (2
+            ,TO_DATE ('2012-01-02 16:39:54', 'YYYY-MM-DD HH24:MI:SS')
+            ,'Phew, what a long day');      
+            
+INSERT INTO xxibm_comments
+     VALUES (2
+            ,TO_DATE ('2012-01-03 20:20:32', 'YYYY-MM-DD HH24:MI:SS')
+            ,'Where?s the bathroom?');   
+            
+INSERT INTO xxibm_comments
+     VALUES (3
+            ,TO_DATE ('2012-01-04 22:45:03', 'YYYY-MM-DD HH24:MI:SS')
+            ,'IBM Test Message 1');   
+            
+INSERT INTO xxibm_comments
+     VALUES (4
+            ,TO_DATE ('2012-01-04 18:31:03', 'YYYY-MM-DD HH24:MI:SS')
+            ,'IBM Test Message 2');     
+            
+INSERT INTO xxibm_comments
+     VALUES (5
+            ,TO_DATE ('2012-01-04 23:31:03', 'YYYY-MM-DD HH24:MI:SS')
+            ,'IBM Test Message 3')                                                        
+
+
+/***********************************************************************/
+--
+-- Query 1:
+--
+
+SELECT   usr.state
+        ,COUNT (DISTINCT com.comments) total_comments
+    FROM xxibm_users usr
+        ,xxibm_comments com
+   WHERE usr.user_id = com.user_id
+GROUP BY usr.state;
+
+--
+-- Query 2:
+-- 
+
+SELECT usr.user_name
+      ,com.comments
+  FROM xxibm_users usr
+      ,xxibm_comments com
+ WHERE usr.user_id = com.user_id
+   AND timestamp = (SELECT MAX (timestamp)
+                      FROM xxibm_comments icom
+                     WHERE icom.user_id = com.user_id);
+  
+--                    
+-- Query 3
+--
+:                      
+SELECT   TRUNC (com.timestamp) timestamp
+        ,COUNT (DISTINCT comments) total_comments
+    FROM xxibm_users usr
+        ,xxibm_comments com
+   WHERE usr.user_id = com.user_id
+     AND TO_CHAR (timestamp, 'MON') = 'JAN'
+GROUP BY TRUNC (com.timestamp);
+     
+/***********************************************************************/
+
+
+
+
